@@ -47,14 +47,36 @@ public class TripMatcher {
 			
 	        double totalDistance = 0;
 	        long totalMinutes = 0;
-
-	        for (GPSRecord gps : matchedGPS) {
+	        double totalLat = 0;
+	        double totalLon = 0;
+	        int gpsPointCount = 0;
+	        
+	        for (GPSRecord gps : matchedGPS) {     	
 	            totalDistance += gps.distanceKm;
 	            totalMinutes += gps.durationMinutes;
+	            
+	            totalLat += gps.startLatitude;
+	            totalLon += gps.startLongitude;
+	            gpsPointCount++;
+
+	            totalLat += gps.endLatitude;
+	            totalLon += gps.endLongitude;
+	            gpsPointCount++;
 	        }
 	        trip.totalDistance = totalDistance;
 	        trip.totalDurationMinutes = totalMinutes;
-
+	        
+	        if (gpsPointCount > 0) {
+	            trip.averageLatitude =  totalLat / gpsPointCount;
+	            trip.averageLongitude = totalLon / gpsPointCount;
+	        }
+	        
+	        System.out.println(
+	                "TRIP GPS CENTER = "
+	                        + trip.averageLatitude
+	                        + " , "
+	                        + trip.averageLongitude
+	        );
 	        // AVG SPEED
 	        if (totalMinutes > 0) {
 	            trip.averageSpeed = totalDistance /(totalMinutes / 60.0);

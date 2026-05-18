@@ -13,10 +13,16 @@ public class Trip {
     public long totalDurationMinutes;
     public boolean routeOutlier;
     public boolean timeOutlier;
+    public boolean gpsOutlier;
     public DispatchRecord dispatchRecord;
     public LocalDateTime tripStartTime;
     public LocalDateTime tripEndTime;
     public double averageSpeed;
+    public double averageLatitude;
+    public double averageLongitude;
+    public double gpsDeviationScore;
+    public double expectedDistance;
+    
     
     @Override
     public String toString(){
@@ -43,6 +49,8 @@ public class Trip {
                 "\nrouteOutlier=" + routeOutlier +
 
                 "\ntimeOutlier=" + timeOutlier +
+                
+                "\ngpsDeviationScore=" + gpsDeviationScore +
 
                 "\n}";
     }
