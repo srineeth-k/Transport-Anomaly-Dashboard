@@ -1,7 +1,6 @@
 package com.transport.main;
 
 import com.transport.model.DispatchRecord;
-
 import com.transport.reader.DispatchExcelReader;
 import com.transport.model.GPSRecord;
 import com.transport.reader.GPSExcelReader;
@@ -9,10 +8,11 @@ import com.transport.service.TripMatcher;
 import com.transport.model.Trip;
 import com.transport.service.RouteAnalyticsService;
 import com.transport.analysis.OutlierDetector;
+import com.transport.analysis.GPSRouteDeviationDetector;
 import com.transport.analysis.ShortestPathOutlierDetector;
 import com.transport.graph.RouteGraph;
-import com.transport.graph.ShortestPathService;
-import com.transport.analysis.GPSRouteDeviationDetector;
+import com.transport.graph.GPSRouteGraphBuilder;
+import com.transport.analysis.GPSShortestPathAnalyzer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,106 +76,37 @@ public class MainApp {
 
         RouteAnalyticsService analytics = new RouteAnalyticsService();
         analytics.analyzeRoutes(trips);
-    	
-    	RouteGraph graph =
-    	        new RouteGraph();
 
-    	// SAMPLE ROUTES
-
-    	graph.addEdge(
-    	        "BAYYAVARAM",
-    	        "VISAKHAPATNAM",
-    	        25.0
-    	);
-
-    	graph.addEdge(
-    	        "VISAKHAPATNAM",
-    	        "PENDURTHI",
-    	        20.0
-    	);
-
-    	graph.addEdge(
-    	        "VISAKHAPATNAM",
-    	        "MADHURAVADA (U)",
-    	        15.0
-    	);
-
-    	graph.addEdge(
-    	        "VISAKHAPATNAM",
-    	        "DEVARAPALLE",
-    	        75.0
-    	);
-
-    	graph.addEdge(
-    	        "DEVARAPALLE",
-    	        "BHANJANAGAR",
-    	        140.0
-    	);
-
-    	graph.addEdge(
-    	        "BHANJANAGAR",
-    	        "BALUGAON",
-    	        60.0
-    	);
-
-    	graph.addEdge(
-    	        "BALUGAON",
-    	        "CHHATRAPUR",
-    	        30.0
-    	);
-
-    	graph.addEdge(
-    	        "CHHATRAPUR",
-    	        "BERHAMPUR",
-    	        20.0
-    	);
-
-    	graph.addEdge(
-    	        "BERHAMPUR",
-    	        "ICHAPURAM",
-    	        55.0
-    	);
-
-    	graph.addEdge(
-    	        "ICHAPURAM",
-    	        "PALAKONDA",
-    	        95.0
-    	);
-
-    	graph.addEdge(
-    	        "PALAKONDA",
-    	        "RAYAGADA",
-    	        120.0
-    	);
-        
         // =========================
         // OUTLIER ANALYTICS
         // =========================
+
         OutlierDetector detector = new OutlierDetector();
         detector.detectOutliers(trips);
-        
-        GPSRouteDeviationDetector gpsDetector =  new GPSRouteDeviationDetector();
-        gpsDetector.detectGPSDeviation(trips);
-    	
-    	ShortestPathOutlierDetector
-    	shortestDetector =
-    	new ShortestPathOutlierDetector(
-    	        graph
-    	);
 
-    	shortestDetector
-    	.detectShortestPathOutliers(
-    	        trips
-    	);
-        
+        GPSRouteDeviationDetector gpsDetector = new GPSRouteDeviationDetector();
+        gpsDetector.detectGPSDeviation(trips);
+
+        // =========================
+        // GPS GRAPH BUILDING + SHORTEST PATH ANALYSIS
+        // =========================
+
+        GPSRouteGraphBuilder gpsGraphBuilder = new GPSRouteGraphBuilder();
+        RouteGraph gpsGraph = gpsGraphBuilder.buildGraphFromTrips(trips);
+
+        GPSShortestPathAnalyzer gpsShortestAnalyzer = new GPSShortestPathAnalyzer(gpsGraph, gpsGraphBuilder);
+        gpsShortestAnalyzer.analyze(trips);
+
+        // =========================
+        // FINAL OUTLIERS
+        // =========================
+
         System.out.println("\nOUTLIERS FOUND:");
+
         for (Trip trip : trips) {
-            if (trip.routeOutlier || trip.timeOutlier || trip.gpsOutlier) {
+            if (trip.routeOutlier || trip.timeOutlier || trip.gpsOutlier || trip.shortestPathOutlier || trip.gpsDeviationScore > 30) {
                 System.out.println(trip);
             }
         }
-
-        
-        
     }
 }

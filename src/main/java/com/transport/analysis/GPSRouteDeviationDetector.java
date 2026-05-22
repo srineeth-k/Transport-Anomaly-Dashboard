@@ -9,7 +9,6 @@ public class GPSRouteDeviationDetector {
     public void detectGPSDeviation(List<Trip> trips){
 
         Map<String,List<Trip>> routeMap=new HashMap<>();
-
         for(Trip trip:trips){
             routeMap.computeIfAbsent(trip.routeKey,k->new ArrayList<>()).add(trip);
         }
@@ -18,7 +17,6 @@ public class GPSRouteDeviationDetector {
             List<Trip> routeTrips=routeMap.get(route);
 
             if(routeTrips.size()<2)continue;
-
             double totalLat=0;
             double totalLon=0;
 
@@ -26,7 +24,6 @@ public class GPSRouteDeviationDetector {
                 totalLat+=trip.averageLatitude;
                 totalLon+=trip.averageLongitude;
             }
-
             double routeAvgLat=totalLat/routeTrips.size();
             double routeAvgLon=totalLon/routeTrips.size();
 
@@ -35,8 +32,7 @@ public class GPSRouteDeviationDetector {
                     trip.averageLatitude,
                     trip.averageLongitude,
                     routeAvgLat,
-                    routeAvgLon
-                );
+                    routeAvgLon);
                 trip.gpsDeviationScore=deviation;
 
                 if(deviation>30){

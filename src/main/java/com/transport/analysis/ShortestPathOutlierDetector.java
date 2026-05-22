@@ -31,7 +31,6 @@ public class ShortestPathOutlierDetector {
             double actualDistance = trip.totalDistance;
             double allowedDistance = expectedDistance * 1.30;
 
-            // SAVE FOR DEBUGGING
             System.out.println("\nTRIP = " + trip.routeKey);
             System.out.println("EXPECTED DISTANCE = " + expectedDistance);
             System.out.println("ACTUAL DISTANCE = " + actualDistance);

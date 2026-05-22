@@ -22,7 +22,11 @@ public class Trip {
     public double averageLongitude;
     public double gpsDeviationScore;
     public double expectedDistance;
-    
+    public double gpsShortestDistance;
+    public double gpsExtraDistance;
+    public String suggestedPath;
+    public boolean shortestPathOutlier;
+    public double actualGPSDistance;
     
     @Override
     public String toString(){
@@ -51,6 +55,16 @@ public class Trip {
                 "\ntimeOutlier=" + timeOutlier +
                 
                 "\ngpsDeviationScore=" + gpsDeviationScore +
+                
+                 "\nactualGPSDistance=" + actualGPSDistance +
+
+                 "\ngpsShortestDistance=" + gpsShortestDistance +
+
+                 "\ngpsExtraDistance=" + gpsExtraDistance +
+
+                 "\nsuggestedPath='" + suggestedPath + '\'' +
+
+                 "\nshortestPathOutlier=" + shortestPathOutlier +
 
                 "\n}";
     }
