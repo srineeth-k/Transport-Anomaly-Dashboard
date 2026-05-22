@@ -36,7 +36,7 @@ public class GPSRouteDeviationDetector {
                 trip.gpsDeviationScore=deviation;
 
                 if(deviation>30){
-                    trip.gpsOutlier=true;
+                    trip.gpsPatternOutlier=true;
                 }
             }
         }

@@ -13,27 +13,23 @@ public class GPSNodeClusterer {
 
     private static final double CLUSTER_RADIUS_KM = 0.5;
 
-    public GPSNode getOrCreateNode(double lat, double lon) {
+    public GPSNode getOrCreateNode(double lat, double lon,String placeName) {
 
         if (lat == 0 || lon == 0) {
             return null;
         }
 
         for (GPSNode node : nodes) {
-            double distance = haversine(lat, lon, node.latitude, node.longitude);
+            double distance = haversine(lat,lon,node.latitude,node.longitude);
 
             if (distance <= CLUSTER_RADIUS_KM) {
                 return node;
             }
         }
-
-        GPSNode newNode = new GPSNode(
-                "NODE_" + nodeCounter++,
-                lat,
-                lon
-        );
+        GPSNode newNode = new GPSNode( "NODE_" + nodeCounter++, lat, lon, placeName );
 
         nodes.add(newNode);
+
         return newNode;
     }
 

@@ -19,17 +19,24 @@ public class GPSRouteGraphBuilder {
             }
 
             for (GPSRecord gps : trip.gpsSegments) {
+                GPSNode startNode =  clusterer.getOrCreateNode(gps.startLatitude, gps.startLongitude,
+                                gps.startLocation );
 
-                GPSNode startNode = clusterer.getOrCreateNode(gps.startLatitude, gps.startLongitude);
-                GPSNode endNode = clusterer.getOrCreateNode(gps.endLatitude, gps.endLongitude);
+                GPSNode endNode = clusterer.getOrCreateNode( gps.endLatitude, gps.endLongitude,
+                                gps.endLocation );
+
                 if (startNode == null || endNode == null) {
                     continue;
                 }
+
                 if (startNode.id.equals(endNode.id)) {
                     continue;
                 }
-                double distance = haversine(startNode.latitude, startNode.longitude, endNode.latitude, endNode.longitude);
-                graph.addEdge(startNode.id, endNode.id, distance);
+
+                double distance = haversine(startNode.latitude,startNode.longitude, endNode.latitude,
+                                endNode.longitude  );
+
+                graph.addEdge(startNode.id,endNode.id, distance );
             }
         }
 
@@ -52,6 +59,19 @@ public class GPSRouteGraphBuilder {
         }
 
         return nearest;
+    }
+    
+    public GPSNode findNodeById(String nodeId) {
+
+        for (GPSNode node :
+                clusterer.getNodes()) {
+
+            if (node.id.equals(nodeId)) {
+                return node;
+            }
+        }
+
+        return null;
     }
 
     private double haversine(double lat1, double lon1, double lat2, double lon2) {

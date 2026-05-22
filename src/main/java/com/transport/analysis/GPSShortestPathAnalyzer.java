@@ -11,6 +11,7 @@ public class GPSShortestPathAnalyzer {
     private RouteGraph graph;
     private GPSRouteGraphBuilder graphBuilder;
     private ShortestPathService shortestPathService;
+    
 
     public GPSShortestPathAnalyzer(RouteGraph graph, GPSRouteGraphBuilder graphBuilder) {
         this.graph = graph;
@@ -24,7 +25,9 @@ public class GPSShortestPathAnalyzer {
             if (trip.gpsSegments == null || trip.gpsSegments.isEmpty()) {
                 continue;
             }
-
+            
+            trip.suggestedPath = "NO VALID GPS PATH FOUND";
+            
             GPSRecord first = trip.gpsSegments.get(0);
             GPSRecord last = trip.gpsSegments.get(trip.gpsSegments.size() - 1);
                       
@@ -54,7 +57,26 @@ public class GPSShortestPathAnalyzer {
 
             List<String> path = shortestPathService.findShortestPath(graph, startNode.id, endNode.id);
 
-            trip.suggestedPath = String.join(" -> ", path);
+            StringBuilder readablePath = new StringBuilder();
+
+            for (String nodeId : path) {
+                GPSNode node = graphBuilder.findNodeById(nodeId);
+
+                if (node != null && node.placeName != null) {
+                    readablePath.append(node.placeName);
+                } else {
+                    readablePath.append(nodeId);
+                }
+                readablePath.append(" -> ");
+            }
+
+            if (readablePath.length() >= 4) {
+                readablePath.setLength(
+                        readablePath.length() - 4
+                );
+            }
+
+            trip.suggestedPath = readablePath.toString();
 
             double upperLimit = shortestDistance * 1.40;
             double lowerLimit = shortestDistance * 0.70;	
