@@ -16,6 +16,7 @@ import com.transport.reader.GPSExcelReader;
 
 import java.util.*;
 import com.transport.dto.TripResponseDTO;
+import java.io.InputStream;
 
 @Service
 public class TransportAnalysisService {
@@ -27,8 +28,10 @@ public class TransportAnalysisService {
         // =========================
 
         DispatchExcelReader dispatchReader = new DispatchExcelReader();
-        String dispatchFile = "C:\\Users\\Srineeth K\\Desktop\\pst project\\pst march.xlsx";
-        List<DispatchRecord> dispatchRecords = dispatchReader.read(dispatchFile);
+
+        InputStream dispatchStream = getClass().getResourceAsStream("/data/pst-march.xlsx");
+
+        List<DispatchRecord> dispatchRecords = dispatchReader.read(dispatchStream);
 
         System.out.println("Total Dispatch Records = " + dispatchRecords.size());
 
@@ -37,18 +40,20 @@ public class TransportAnalysisService {
         // =========================
 
         String[] gpsFiles = {
-                "C:\\Users\\Srineeth K\\Desktop\\pst project\\gps\\History-Report-AP39U9519.xlsx",
-                "C:\\Users\\Srineeth K\\Desktop\\pst project\\gps\\History-Report-AP39U9529.xlsx",
-                "C:\\Users\\Srineeth K\\Desktop\\pst project\\gps\\History-Report-AP39U9629.xlsx",
-                "C:\\Users\\Srineeth K\\Desktop\\pst project\\gps\\History-Report-AP39U9649.xlsx"
+                "/data/gps/History-Report-AP39U9519.xlsx",
+                "/data/gps/History-Report-AP39U9529.xlsx",
+                "/data/gps/History-Report-AP39U9629.xlsx",
+                "/data/gps/History-Report-AP39U9649.xlsx"
         };
 
         List<GPSRecord> allGPSRecords = new ArrayList<>();
         GPSExcelReader gpsReader = new GPSExcelReader();
 
         for (String file : gpsFiles) {
-            List<GPSRecord> records = gpsReader.read(file);
+            InputStream gpsStream = getClass().getResourceAsStream(file);
+            List<GPSRecord> records = gpsReader.read(gpsStream);
             allGPSRecords.addAll(records);
+
             System.out.println("Loaded GPS File : " + file);
             System.out.println("Records Added : " + records.size());
         }
@@ -111,7 +116,7 @@ public class TransportAnalysisService {
 
         ReportExportService reportService = new ReportExportService();
 
-        reportService.exportToCSV(trips, "C:\\Users\\Srineeth K\\Desktop\\pst project\\trip_report.csv");
+        reportService.exportToCSV(trips, "trip_report.csv");
 
         System.out.println("\nOUTLIERS FOUND:");
 
