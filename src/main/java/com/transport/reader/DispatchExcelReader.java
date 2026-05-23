@@ -69,8 +69,7 @@ public class DispatchExcelReader {
 
                     String vehicle = vehicleCell.getStringCellValue();
 
-                    record.vehicleNo =
-                            VehicleUtil.normalize(vehicle);
+                    record.vehicleNo = VehicleUtil.normalize(vehicle);
                 }
 
                 // ==========================
@@ -80,8 +79,7 @@ public class DispatchExcelReader {
                 Cell orderCell = row.getCell(3);
 
                 if (orderCell != null) {
-                    record.orderNo =
-                            orderCell.toString();
+                    record.orderNo = orderCell.toString();
                 }
 
                 // ==========================
@@ -91,8 +89,7 @@ public class DispatchExcelReader {
                 Cell productCell = row.getCell(4);
 
                 if (productCell != null) {
-                    record.productName =
-                            productCell.toString();
+                    record.productName = productCell.toString();
                 }
 
                 // ==========================
@@ -102,8 +99,7 @@ public class DispatchExcelReader {
                 Cell fromCell = row.getCell(6);
 
                 if (fromCell != null) {
-                    record.fromName =
-                            fromCell.toString();
+                    record.fromName = fromCell.toString();
                 }
 
                 // ==========================
@@ -113,8 +109,7 @@ public class DispatchExcelReader {
                 Cell toCell = row.getCell(7);
 
                 if (toCell != null) {
-                    record.toName =
-                            toCell.toString();
+                    record.toName = toCell.toString();
                 }
 
                 // ==========================
@@ -124,8 +119,7 @@ public class DispatchExcelReader {
                 Cell onwardCell = row.getCell(9);
 
                 if (onwardCell != null) {
-                    record.onwardReturn =
-                            onwardCell.toString();
+                    record.onwardReturn = onwardCell.toString();
                 }
 
                 records.add(record);

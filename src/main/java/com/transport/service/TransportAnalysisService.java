@@ -1,25 +1,25 @@
-package com.transport.main;
+package com.transport.service;
 
-import com.transport.model.DispatchRecord;
-import com.transport.reader.DispatchExcelReader;
-import com.transport.model.GPSRecord;
-import com.transport.reader.GPSExcelReader;
-import com.transport.service.TripMatcher;
-import com.transport.model.Trip;
-import com.transport.service.RouteAnalyticsService;
-import com.transport.analysis.OutlierDetector;
+import org.springframework.stereotype.Service;
+
 import com.transport.analysis.GPSRouteDeviationDetector;
-import com.transport.analysis.ShortestPathOutlierDetector;
-import com.transport.graph.RouteGraph;
-import com.transport.graph.GPSRouteGraphBuilder;
 import com.transport.analysis.GPSShortestPathAnalyzer;
+import com.transport.analysis.OutlierDetector;
+import com.transport.dto.SummaryDTO;
+import com.transport.graph.GPSRouteGraphBuilder;
+import com.transport.graph.RouteGraph;
+import com.transport.model.DispatchRecord;
+import com.transport.model.GPSRecord;
+import com.transport.model.Trip;
+import com.transport.reader.DispatchExcelReader;
+import com.transport.reader.GPSExcelReader;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class MainApp {
+@Service
+public class TransportAnalysisService {
 
-    public static void main(String[] args) {
+    public List<Trip> analyzeTrips() {
 
         // =========================
         // READ DISPATCH FILE
@@ -100,13 +100,52 @@ public class MainApp {
         // =========================
         // FINAL OUTLIERS
         // =========================
+        AnomalyReasonService anomalyService = new AnomalyReasonService();
+        anomalyService.generateReasons(trips);
+
+        RiskScoreService riskService = new RiskScoreService();
+        riskService.calculateRiskScores(trips);
+
+        trips.sort((a, b) -> Double.compare(b.riskScore, a.riskScore));
+
+        ReportExportService reportService = new ReportExportService();
+
+        reportService.exportToCSV(trips, "C:\\Users\\Srineeth K\\Desktop\\pst project\\trip_report.csv");
 
         System.out.println("\nOUTLIERS FOUND:");
 
         for (Trip trip : trips) {
-            if (trip.routeOutlier || trip.timeOutlier || trip.gpsOutlier || trip.shortestPathOutlier || trip.gpsDeviationScore > 30) {
+            trip.routeOutlier = trip.shortestPathOutlier || trip.gpsPatternOutlier || trip.timeOutlier;
+            if (trip.routeOutlier) {
                 System.out.println(trip);
             }
         }
+        return trips;
     }
+
+    public SummaryDTO getSummary() {
+
+        List<Trip> trips = analyzeTrips();
+        SummaryDTO summary = new SummaryDTO();
+        summary.totalTrips = trips.size();
+
+        for (Trip trip : trips) {
+            if (trip.routeOutlier) {
+                summary.outlierTrips++;
+            }
+
+            if ("HIGH".equalsIgnoreCase(trip.riskLevel)) {
+                summary.highRiskTrips++;
+
+            } else if ("MEDIUM".equalsIgnoreCase(trip.riskLevel)) {
+                summary.mediumRiskTrips++;
+            } else if ("LOW".equalsIgnoreCase(trip.riskLevel)) {
+                summary.lowRiskTrips++;
+
+            }
+        }
+
+        return summary;
+    }
+
 }

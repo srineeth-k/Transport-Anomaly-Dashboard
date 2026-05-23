@@ -1,7 +1,7 @@
 package com.transport.model;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
 
 public class Trip {
 
@@ -28,6 +28,9 @@ public class Trip {
     public boolean shortestPathOutlier;
     public double actualGPSDistance;
     public boolean gpsPatternOutlier;
+    public List<String> anomalyReasons = new ArrayList<>();
+    public double riskScore;
+    public String riskLevel;
     
     @Override
     public String toString(){
@@ -68,6 +71,12 @@ public class Trip {
                  "\nsuggestedPath='" + suggestedPath + '\'' +
 
                  "\nshortestPathOutlier=" + shortestPathOutlier +
+                 
+                  "\nanomalyReasons=" + anomalyReasons + "\n" +
+                  
+				 "\nriskScore=" + riskScore +
+				
+				 "\nriskLevel='" + riskLevel + '\'' +
 
                 "\n}";
     }

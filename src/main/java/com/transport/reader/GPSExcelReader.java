@@ -20,14 +20,14 @@ public class GPSExcelReader {
     public List<GPSRecord> read(String filePath) {
 
         List<GPSRecord> records = new ArrayList<>();
-        DateTimeFormatter formatter =DateTimeFormatter.ofPattern("dd/MM/yy HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy HH:mm");
         try {
 
             FileInputStream fis = new FileInputStream(filePath);
 
             Workbook workbook = new XSSFWorkbook(fis);
 
-            Sheet sheet =workbook.getSheetAt(0);
+            Sheet sheet = workbook.getSheetAt(0);
 
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
 
@@ -46,11 +46,9 @@ public class GPSExcelReader {
 
                 if (vehicleCell != null) {
 
-                    String vehicle =
-                            vehicleCell.toString();
+                    String vehicle = vehicleCell.toString();
 
-                    record.vehicleNo =
-                            VehicleUtil.normalize(vehicle);
+                    record.vehicleNo = VehicleUtil.normalize(vehicle);
                 }
 
                 // =========================
@@ -61,19 +59,15 @@ public class GPSExcelReader {
 
                 if (startTimeCell != null) {
 
-                    String startTimeText =
-                            startTimeCell.toString().trim();
+                    String startTimeText = startTimeCell.toString().trim();
 
                     // Validate timestamp format
                     if (startTimeText.matches(
-                            "\\d{2}/\\d{2}/\\d{2} \\d{2}:\\d{2}"
-                    )) {
+                            "\\d{2}/\\d{2}/\\d{2} \\d{2}:\\d{2}")) {
 
-                        record.startTime =
-                                LocalDateTime.parse(
-                                        startTimeText,
-                                        formatter
-                                );
+                        record.startTime = LocalDateTime.parse(
+                                startTimeText,
+                                formatter);
                     }
                 }
 
@@ -85,18 +79,14 @@ public class GPSExcelReader {
 
                 if (endTimeCell != null) {
 
-                    String endTimeText =
-                            endTimeCell.toString().trim();
+                    String endTimeText = endTimeCell.toString().trim();
 
                     if (endTimeText.matches(
-                            "\\d{2}/\\d{2}/\\d{2} \\d{2}:\\d{2}"
-                    )) {
+                            "\\d{2}/\\d{2}/\\d{2} \\d{2}:\\d{2}")) {
 
-                        record.endTime =
-                                LocalDateTime.parse(
-                                        endTimeText,
-                                        formatter
-                                );
+                        record.endTime = LocalDateTime.parse(
+                                endTimeText,
+                                formatter);
                     }
                 }
 
@@ -104,26 +94,22 @@ public class GPSExcelReader {
                 // START LOCATION
                 // =========================
 
-                Cell startLocationCell =
-                        row.getCell(10);
+                Cell startLocationCell = row.getCell(10);
 
                 if (startLocationCell != null) {
 
-                    record.startLocation =
-                            startLocationCell.toString();
+                    record.startLocation = startLocationCell.toString();
                 }
 
                 // =========================
                 // END LOCATION
                 // =========================
 
-                Cell endLocationCell =
-                        row.getCell(12);
+                Cell endLocationCell = row.getCell(12);
 
                 if (endLocationCell != null) {
 
-                    record.endLocation =
-                            endLocationCell.toString();
+                    record.endLocation = endLocationCell.toString();
                 }
 
                 // =========================
@@ -134,15 +120,13 @@ public class GPSExcelReader {
 
                 if (distanceCell != null) {
 
-                    String distanceText =
-                            distanceCell.toString().trim();
+                    String distanceText = distanceCell.toString().trim();
 
                     if (!distanceText.isEmpty()) {
 
                         try {
 
-                            record.distanceKm =
-                                    Double.parseDouble(distanceText);
+                            record.distanceKm = Double.parseDouble(distanceText);
 
                         } catch (Exception e) {
 
@@ -158,11 +142,9 @@ public class GPSExcelReader {
                 if (record.startTime != null &&
                         record.endTime != null) {
 
-                    long minutes =
-                            Duration.between(
-                                    record.startTime,
-                                    record.endTime
-                            ).toMinutes();
+                    long minutes = Duration.between(
+                            record.startTime,
+                            record.endTime).toMinutes();
 
                     record.durationMinutes = minutes;
                 }
@@ -171,24 +153,19 @@ public class GPSExcelReader {
                 // START LAT/LON
                 // =========================
 
-                Cell startLatLonCell =
-                        row.getCell(20);
+                Cell startLatLonCell = row.getCell(20);
 
                 if (startLatLonCell != null) {
 
-                    String latLon =
-                            startLatLonCell.toString();
+                    String latLon = startLatLonCell.toString();
 
-                    String[] parts =
-                            latLon.split(",");
+                    String[] parts = latLon.split(",");
 
                     if (parts.length == 2) {
 
-                        record.startLatitude =
-                                Double.parseDouble(parts[0].trim());
+                        record.startLatitude = Double.parseDouble(parts[0].trim());
 
-                        record.startLongitude =
-                                Double.parseDouble(parts[1].trim());
+                        record.startLongitude = Double.parseDouble(parts[1].trim());
                     }
                 }
 
@@ -196,24 +173,19 @@ public class GPSExcelReader {
                 // END LAT/LON
                 // =========================
 
-                Cell endLatLonCell =
-                        row.getCell(21);
+                Cell endLatLonCell = row.getCell(21);
 
                 if (endLatLonCell != null) {
 
-                    String latLon =
-                            endLatLonCell.toString();
+                    String latLon = endLatLonCell.toString();
 
-                    String[] parts =
-                            latLon.split(",");
+                    String[] parts = latLon.split(",");
 
                     if (parts.length == 2) {
 
-                        record.endLatitude =
-                                Double.parseDouble(parts[0].trim());
+                        record.endLatitude = Double.parseDouble(parts[0].trim());
 
-                        record.endLongitude =
-                                Double.parseDouble(parts[1].trim());
+                        record.endLongitude = Double.parseDouble(parts[1].trim());
                     }
                 }
 
