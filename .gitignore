@@ -9,6 +9,10 @@ transport-frontend/dist/
 # Backend build
 transport-dashboard-backend/target/
 
+# Generated reports
+*.csv
+trip_report.csv
+
 # OS
 .DS_Store
 Thumbs.db
