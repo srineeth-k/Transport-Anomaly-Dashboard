@@ -15,6 +15,7 @@ import com.transport.reader.DispatchExcelReader;
 import com.transport.reader.GPSExcelReader;
 
 import java.util.*;
+import com.transport.dto.TripResponseDTO;
 
 @Service
 public class TransportAnalysisService {
@@ -148,4 +149,59 @@ public class TransportAnalysisService {
         return summary;
     }
 
+    public List<TripResponseDTO> analyzeTripDTOs() {
+
+        List<Trip> trips = analyzeTrips();
+
+        List<TripResponseDTO> responses = new ArrayList<>();
+
+        for (Trip trip : trips) {
+
+            TripResponseDTO dto = new TripResponseDTO();
+
+            dto.vehicleNo = trip.vehicleNo;
+            dto.routeKey = trip.routeKey;
+            dto.onwardReturn = trip.onwardReturn;
+
+            dto.tripStartTime = String.valueOf(
+                    trip.tripStartTime);
+
+            dto.tripEndTime = String.valueOf(
+                    trip.tripEndTime);
+
+            dto.totalDistance = trip.totalDistance;
+
+            dto.totalDurationMinutes = trip.totalDurationMinutes;
+
+            dto.averageSpeed = trip.averageSpeed;
+
+            dto.actualGPSDistance = trip.actualGPSDistance;
+
+            dto.gpsShortestDistance = trip.gpsShortestDistance;
+
+            dto.gpsExtraDistance = trip.gpsExtraDistance;
+
+            dto.gpsDeviationScore = trip.gpsDeviationScore;
+
+            dto.routeOutlier = trip.routeOutlier;
+
+            dto.timeOutlier = trip.timeOutlier;
+
+            dto.gpsPatternOutlier = trip.gpsPatternOutlier;
+
+            dto.shortestPathOutlier = trip.shortestPathOutlier;
+
+            dto.riskScore = trip.riskScore;
+
+            dto.riskLevel = trip.riskLevel;
+
+            dto.suggestedPath = trip.suggestedPath;
+
+            dto.anomalyReasons = trip.anomalyReasons;
+
+            responses.add(dto);
+        }
+
+        return responses;
+    }
 }
