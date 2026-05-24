@@ -1,5 +1,5 @@
 import axios from 'axios'
 
 export default axios.create({
-    baseURL:"http://localhost:8080/api"
+    baseURL:"https://transport-anomaly-dashboard-1.onrender.com/api"
 });
