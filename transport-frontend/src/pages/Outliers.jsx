@@ -59,7 +59,7 @@ function Outliers() {
 
       <button
         onClick={() => {
-          window.location.href = "https://transport-anomaly-dashboard-1.onrender.com/api";
+          window.location.href ="https://transport-anomaly-dashboard-1.onrender.com/api/outliers/export";
         }}
         style={{
           padding: "10px 16px",
